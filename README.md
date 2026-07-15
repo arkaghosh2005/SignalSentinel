@@ -1,2 +1,1 @@
-# SingalSentinel 
-  
+# SingalSentinel
