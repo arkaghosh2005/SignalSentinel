@@ -768,6 +768,24 @@ def render_full_log(df: pd.DataFrame) -> None:
 
 def render_sidebar(pipeline: Pipeline) -> None:
     st.sidebar.title("Morse Code Generator")
+    st.sidebar.markdown(
+        """
+        <style>
+        /* Force slider min and max labels to always be visible */
+        .stSlider [data-testid*="TickBar"] {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        .stSlider [data-baseweb="slider"] div[data-testid*="TickBarMin"],
+        .stSlider [data-baseweb="slider"] div[data-testid*="TickBarMax"] {
+            opacity: 1 !important;
+            visibility: visible !important;
+            color: inherit !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
     
     # ---- Status indicators at the top ----
     import urllib.request
@@ -789,7 +807,10 @@ def render_sidebar(pipeline: Pipeline) -> None:
     # ---- Send test CW ----
     st.sidebar.header("📡 Send Test CW")
     message_text = st.sidebar.text_input("Message", value="VU2NCS DE VU2RLY NEED SUPPLIES K")
-    message_text = message_text.upper()
+    
+    st.sidebar.markdown("**Signal Settings**")
+    amplitude = st.sidebar.slider("Signal Amplitude", min_value=0.1, max_value=2.0, value=0.8, step=0.1)
+    noise_power = st.sidebar.slider("Static Noise Level", min_value=0.0, max_value=1.0, value=0.2, step=0.05)
     tone_hz = st.sidebar.slider("CW Tone Frequency (Hz)", min_value=400, max_value=1000, value=700, step=50)
     
     # Extract just the "7.030 MHz" part from the selectbox
@@ -814,8 +835,8 @@ def render_sidebar(pipeline: Pipeline) -> None:
                 INCOMING_DIR.mkdir(parents=True, exist_ok=True)
                 path = generate_morse(
                     message_text,
-                    amplitude=0.8,
-                    noise_power=0.2,
+                    amplitude=amplitude,
+                    noise_power=noise_power,
                     pitch=tone_hz,
                     freq_mhz=rx_freq,
                     output_dir=str(INCOMING_DIR),
