@@ -145,7 +145,7 @@ SignalSentinel/
 │
 ├── utils.py               # Morse code dictionary (A–Z, 0–9, punctuation, prosigns)
 │
-├── ops_manual.md          # Operations manual — agent identity, station roster,
+├── sentinel_protocols.md  # Operations manual — agent identity, station roster,
 │                          #   frequency plan, precedence rules, CW procedure,
 │                          #   message templates, and timeout rules
 │
@@ -215,40 +215,40 @@ The dashboard opens at `http://localhost:8501`. The agent + watchdog pipeline st
     ┌─────────────────────────────────────────────────────┐
     │  📻 Sidebar: Send Test CW 📻                       │
     │  (User types message → generate_morse() → WAV)      │
-    └──────────────────────┬──────────────────────────────┘
-                           │
-                           ▼
+    └─────────────────────────┬───────────────────────────┘
+                              │
+                              ▼
     ┌─────────────────────────────────────────────────────┐
     │  📂 incoming_cw/ (Filesystem) 📂                   │
     │  Watchdog monitors for new .wav files               │
-    └──────────────────────┬──────────────────────────────┘
-                           │ on_created event
-                           ▼
+    └─────────────────────────┬───────────────────────────┘
+                              │ on_created event
+                              ▼
     ┌─────────────────────────────────────────────────────┐
     │  🔊 CW Decoder (decoder.py) 🔊                     │
     │  WAV → Bandpass Filter → Envelope → Otsu Threshold  │
     │  → KMeans (dot vs dash) → Morse → Text → Spellfix   │
-    └──────────────────────┬──────────────────────────────┘
-                           │ decoded text
-                           ▼
+    └─────────────────────────┬───────────────────────────┘
+                              │ decoded text
+                              ▼
     ┌─────────────────────────────────────────────────────┐
     │  🤖 Gemma 4 Agent (LangGraph) 🤖                   │
-    │  SystemMessage: ops_manual.md                       │
+    │  SystemMessage: sentinel_protocols.md               │
     │  HumanMessage: decoded CW text                      │
     │  tool_choice="any" → forced tool call               │
-    └──────────────────────┬──────────────────────────────┘
-                           │ exactly one tool call
-                           ▼
+    └─────────────────────────┬───────────────────────────┘
+                              │ exactly one tool call
+                              ▼
     ┌─────────────────────────────────────────────────────┐
-    │  🛠️ Tool Execution (one of four)                   │
+    │  🛠️ Tool Execution (one of four) 🛠️                │
     │                                                     │
-    │  📤 send_cw_reply     → encoder.py → outgoing WAV  │
-    │  🔁 relay_message     → encoder.py → outgoing WAV  │
-    │  🚫 record_no_contact → log only, no transmission  │
-    │  🗒️ log_only          → log only, no transmission  │
-    └──────────────────────┬──────────────────────────────┘
-                           │ result + event logged
-                           ▼
+    │  📤 send_cw_reply 📤  → encoder.py → outgoing WAV  │
+    │  🔁 relay_message 🔁  → encoder.py → outgoing WAV  │
+    │  🚫 record_no_contact 🚫 → no transmission         │
+    │  🗒️ log_only 🗒️       → log only, no transmission  │
+    └─────────────────────────┬───────────────────────────┘
+                              │ result + event logged
+                              ▼
     ┌─────────────────────────────────────────────────────┐
     │ 📡 Streamlit Dashboard (auto-refresh every 2s) 📡  │
     │                                                     │
