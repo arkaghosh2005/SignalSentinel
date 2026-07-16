@@ -13,7 +13,7 @@
 ![NumPy](https://img.shields.io/badge/NumPy-Audio_Processing-013243?style=for-the-badge&logo=numpy&logoColor=white)
 ![scikit--learn](https://img.shields.io/badge/scikit--learn-KMeans_Clustering-F7931E?style=for-the-badge&logo=scikit-learn&logoColor=white)
 
-**An autonomous CW (Continuous Wave/Morse code) emergency net controller built with Streamlit, LangGraph, and Gemma 4. Features real-time folder monitoring with watchdog, DSP-based Morse decoding using bandpass filtering and KMeans clustering, an LLM agent that autonomously triages incoming transmissions by precedence (EMERGENCY / PRIORITY), generates outgoing CW reply audio, and logs every action to a live-refreshing dashboard with toast notifications, CSV export, and an agent reasoning panel.**
+**A High-Performance Autonomous Morse Code (CW) monitoring and control station built with Python, Streamlit, LangGraph, & Gemma 4. Features real-time folder monitoring with watchdog, DSP-based Morse decoding using bandpass filtering and KMeans clustering, and an AI-powered contextual reconstruction engine. The LLM agent autonomously triages incoming transmissions by precedence (EMERGENCY / PRIORITY / ROUTINE) using simulated frequency contexts, generates dynamic CW reply audio, and logs every action to a live-refreshing SQLite telemetry dashboard with toast notifications, CSV export, and an agent reasoning panel.**
 
 </div>
 
@@ -53,7 +53,7 @@
 | **Forced Tool Calling** | `tool_choice="any"` ensures the model always calls a tool — never responds with plain text |
 | **4 Action Tools** | `send_cw_reply`, `relay_message`, `record_no_contact`, `log_only` — each with structured logging |
 | **Ops Manual Grounding** | Agent decisions are grounded in a structured operations manual with station roster, frequency plan, precedence rules, and CW procedure |
-| **Autonomous Precedence Triage** | EMERGENCY (injury/fire/flood/collapse) vs PRIORITY (everything else) — when in doubt, defaults to EMERGENCY |
+| **Autonomous Precedence Triage** | 3-tier routing: EMERGENCY (injury/fire/SOS) vs PRIORITY (important roster traffic) vs ROUTINE (tests/general). Defaults to EMERGENCY when in doubt. |
 
 ### 🔊 CW Audio Engine
 | Feature | Description |
@@ -214,7 +214,8 @@ The dashboard opens at `http://localhost:8501`. The agent + watchdog pipeline st
 
     ┌─────────────────────────────────────────────────────┐
     │  📻 Sidebar: Send Test CW 📻                       │
-    │  (User types message → generate_morse() → WAV)      │
+    │  (User inputs text, adjusts Tone/Noise/Amplitude,   │
+    │   selects Frequency → generate_morse() → WAV)       │
     └─────────────────────────┬───────────────────────────┘
                               │
                               ▼
@@ -234,7 +235,7 @@ The dashboard opens at `http://localhost:8501`. The agent + watchdog pipeline st
     ┌─────────────────────────────────────────────────────┐
     │  🤖 Gemma 4 Agent (LangGraph) 🤖                   │
     │  SystemMessage: sentinel_protocols.md               │
-    │  HumanMessage: decoded CW text                      │
+    │  HumanMessage: decoded CW text + Frequency          │
     │  tool_choice="any" → forced tool call               │
     └─────────────────────────┬───────────────────────────┘
                               │ exactly one tool call
