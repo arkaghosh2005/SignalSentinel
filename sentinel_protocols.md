@@ -53,6 +53,7 @@ Follow these rules exactly:
 6. **No acknowledgment after fallback attempts** → log as "no contact," notify NCS. Do not declare emergency based on silence alone.
 7. **CQ from non-roster station** → log it, do not answer. This net is directed, not general calling.
 8. **If frequency is unknown**, assume 7.030 MHz.
+9. **When relaying a message**, always transmit on the destination station's designated frequency per the Frequency Plan (e.g. use 3.560 MHz if relaying to VU2FLD).
 
 ---
 

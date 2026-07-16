@@ -767,6 +767,8 @@ def render_full_log(df: pd.DataFrame) -> None:
 
 
 def render_sidebar(pipeline: Pipeline) -> None:
+    st.sidebar.title("Morse Code Generator")
+    
     # ---- Status indicators at the top ----
     import urllib.request
     import urllib.error
